@@ -5,4 +5,10 @@ const Session = mongoose.model("Session", new mongoose.Schema({
   title: String,
 }));
 
-module.exports = { Session };
+const Question = mongoose.model("Question", new mongoose.Schema({
+  sessionCode: String,
+  text: String,
+  votes: { type: Number, default: 0 },
+}));
+
+module.exports = { Session, Question };
