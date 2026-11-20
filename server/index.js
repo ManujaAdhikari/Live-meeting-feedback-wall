@@ -44,6 +44,11 @@ io.on("connection", (socket) => {
     const q = await Question.create({ sessionCode: code, text: text.trim() });
     io.to(code).emit("question:added", q);
   });
+
+  socket.on("question:upvote", async ({ code, id }) => {
+    const q = await Question.findByIdAndUpdate(id, { $inc: { votes: 1 } }, { new: true });
+    io.to(code).emit("question:updated", q);
+  });
 });
 
 const PORT = process.env.PORT || 5000;
