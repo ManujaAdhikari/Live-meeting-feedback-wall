@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("question:upvote", async ({ code, id }) => {
-    const q = await Question.findByIdAndUpdate(id, { $inc: { votes: 1 } }, { new: true });
+    const q = await Question.findByIdAndUpdate(id, { $inc: { votes: 1 } }, { returnDocument: "after" });
     io.to(code).emit("question:updated", q);
   });
 });
