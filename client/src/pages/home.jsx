@@ -1,3 +1,48 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const API = "http://localhost:5000";
+
 export default function Home() {
-  return <h1>Home</h1>;
+  const [title, setTitle] = useState("");
+  const [code, setCode] = useState("");
+  const navigate = useNavigate();
+
+  async function createSession() {
+    if (!title.trim()) return;
+    const res = await fetch(`${API}/api/sessions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    });
+    const session = await res.json();
+    navigate(`/host/${session.code}`);
+  }
+
+  function joinSession() {
+    if (!code.trim()) return;
+    navigate(`/join/${code.trim().toUpperCase()}`);
+  }
+
+  return (
+    <div>
+      <h1>Live Meeting Feedback Wall</h1>
+
+      <h2>Host a meeting</h2>
+      <input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Meeting title"
+      />
+      <button onClick={createSession}>Create session</button>
+
+      <h2>Join a meeting</h2>
+      <input
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
+        placeholder="Session code"
+      />
+      <button onClick={joinSession}>Join</button>
+    </div>
+  );
 }
