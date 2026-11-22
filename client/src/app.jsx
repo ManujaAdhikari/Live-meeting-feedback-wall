@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Host from "./pages/Host";
-import Join from "./pages/Join";
+import Home from "./pages/home";
+import Host from "./pages/host";
+import Join from "./pages/join";
 
 export default function App() {
   return (

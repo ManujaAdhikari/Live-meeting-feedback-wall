@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API } from "../config";
 
-const API = "http://localhost:5000";
 
 export default function Home() {
   const [title, setTitle] = useState("");

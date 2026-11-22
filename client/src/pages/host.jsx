@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "../socket";
+import { API } from "../config";
 
-const API = "http://localhost:5000";
 
 export default function Host() {
   const { code } = useParams();
