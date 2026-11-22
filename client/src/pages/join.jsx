@@ -62,6 +62,7 @@ export default function Join() {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Type your question"
+        maxlength={200}
       />
       <button onClick={sendQuestion}>Send</button>
 
