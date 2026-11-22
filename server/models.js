@@ -9,6 +9,7 @@ const Question = mongoose.model("Question", new mongoose.Schema({
   sessionCode: String,
   text: String,
   votes: { type: Number, default: 0 },
+  voters: [String],
 }));
 
 module.exports = { Session, Question };

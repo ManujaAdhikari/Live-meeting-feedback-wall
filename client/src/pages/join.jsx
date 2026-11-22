@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { socket } from "../socket";
+import { socket, clientId} from "../socket";
 
 const API = "http://localhost:5000";
 
@@ -47,7 +47,7 @@ export default function Join() {
   }
 
   function upvote(id) {
-    socket.emit("question:upvote", { code, id });
+    socket.emit("question:upvote", { code, id, clientId});
   }
 
   const sorted = [...questions].sort((a, b) => b.votes - a.votes);
@@ -68,7 +68,9 @@ export default function Join() {
         {sorted.map((q) => (
           <li key={q._id}>
             {q.text} ({q.votes} votes){" "}
-            <button onClick={() => upvote(q._id)}>Upvote</button>
+            <button onClick={() => upvote(q._id)}disabled={q.voters?.includes(clientId)}>
+              {q.voters?.includes(clientId) ? "Voted" : "Upvote"}
+            </button>
           </li>
         ))}
       </ul>

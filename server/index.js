@@ -44,12 +44,15 @@ io.on("connection", (socket) => {
     const q = await Question.create({ sessionCode: code, text: text.trim() });
     io.to(code).emit("question:added", q);
   });
-
-  socket.on("question:upvote", async ({ code, id }) => {
-    const q = await Question.findByIdAndUpdate(id, { $inc: { votes: 1 } }, { returnDocument: "after" });
-    io.to(code).emit("question:updated", q);
-  });
-});
+    socket.on("question:upvote", async ({ code, id, clientId }) => {
+    const q = await Question.findOneAndUpdate(
+      { _id: id, voters: { $ne: clientId } },
+      { $inc: { votes: 1 }, $push: { voters: clientId } },
+      { returnDocument: "after" }
+    );
+    if (q) io.to(code).emit("question:updated", q);
+  })});
+ 
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log("Server running on port " + PORT));
