@@ -49,9 +49,10 @@ export default function Join() {
   function upvote(id) {
     socket.emit("question:upvote", { code, id, clientId});
   }
-
-  const sorted = [...questions].sort((a, b) => b.votes - a.votes);
-
+  const sorted = [...questions]
+    .filter((q) => q.status !== "hidden")
+    .sort((a, b) => (a.status === "answered") - (b.status === "answered") || b.votes - a.votes);
+  
   return (
     <div>
       <h1>{title}</h1>
@@ -67,6 +68,7 @@ export default function Join() {
       <ul>
         {sorted.map((q) => (
           <li key={q._id}>
+           {q.status === "answered" && "[Answered] "} 
             {q.text} ({q.votes} votes){" "}
             <button onClick={() => upvote(q._id)}disabled={q.voters?.includes(clientId)}>
               {q.voters?.includes(clientId) ? "Voted" : "Upvote"}

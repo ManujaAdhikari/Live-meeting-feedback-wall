@@ -37,8 +37,10 @@ export default function Host() {
   }, [code]);
 
   const joinLink = `${window.location.origin}/join/${code}`;
-  const sorted = [...questions].sort((a, b) => b.votes - a.votes);
-
+  const sorted = [...questions].sort((a, b) => (a.status === "answered") - (b.status ==="answered") || b.votes - a.votes);
+  function setStatus(id, status) {
+  socket.emit("question:status", { code, id, status });
+  }
   return (
     <div>
       <h1>{title}</h1>
@@ -47,10 +49,17 @@ export default function Host() {
 
       <h2>Questions ({questions.length})</h2>
       {sorted.length === 0 && <p>No questions yet.</p>}
-      <ol>
+      <ol>   
         {sorted.map((q) => (
-          <li key={q._id}>
-            {q.text} ({q.votes} votes)
+          <li key={q._id} style={{ opacity: q.status === "hidden" ? 0.4 : 1 }}>
+            {q.status === "answered" && "[Answered] "}
+            {q.text} ({q.votes} votes){" "}
+            <button onClick={() => setStatus(q._id, q.status === "answered" ? "visible" : "answered")}>
+              {q.status === "answered" ? "Unmark" : "Mark answered"}
+            </button>
+            <button onClick={() => setStatus(q._id, q.status === "hidden" ? "visible" : "hidden")}>
+              {q.status === "hidden" ? "Show" : "Hide"}
+            </button>
           </li>
         ))}
       </ol>

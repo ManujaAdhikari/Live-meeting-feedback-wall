@@ -44,14 +44,22 @@ io.on("connection", (socket) => {
     const q = await Question.create({ sessionCode: code, text: text.trim() });
     io.to(code).emit("question:added", q);
   });
-    socket.on("question:upvote", async ({ code, id, clientId }) => {
+
+  socket.on("question:upvote", async ({ code, id, clientId }) => {
     const q = await Question.findOneAndUpdate(
       { _id: id, voters: { $ne: clientId } },
       { $inc: { votes: 1 }, $push: { voters: clientId } },
       { returnDocument: "after" }
     );
     if (q) io.to(code).emit("question:updated", q);
-  })});
+  });
+
+  socket.on("question:status", async ({ code, id, status }) => {
+    if (!["visible", "answered", "hidden"].includes(status)) return;
+    const q = await Question.findByIdAndUpdate(id, { status }, { returnDocument: "after" });
+    if (q) io.to(code).emit("question:updated", q);
+  });
+});
  
 
 const PORT = process.env.PORT || 5000;
