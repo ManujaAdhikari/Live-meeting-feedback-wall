@@ -16,6 +16,7 @@ export default function Home() {
       body: JSON.stringify({ title }),
     });
     const session = await res.json();
+    localStorage.setItem("hostKey:" + session.code, session.hostKey);
     navigate(`/host/${session.code}`);
   }
 

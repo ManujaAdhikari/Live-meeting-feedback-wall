@@ -18,35 +18,24 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch((err) => console.log("DB error:", err.message));
 
-app.get("/", (req, res) => res.send("Server running"));
+app.get("/", (req, res) => res.send("Server running v2"));
 
-// create a session
-app.post("/api/sessions", async (req, res) => {
-  const code = Math.random().toString(36).slice(2, 8).toUpperCase();
-  const session = await Session.create({ code, title: req.body.title });
-  res.json(session);
-});
-
-// get a session and its questions
-app.get("/api/sessions/:code", async (req, res) => {
-  const session = await Session.findOne({ code: req.params.code });
-  if (!session) return res.status(404).json({ error: "Session not found" });
-  const questions = await Question.find({ sessionCode: req.params.code }).sort({ votes: -1 });
-  res.json({ session, questions });
-});
+// create a session (makes a secret host key)
 app.post("/api/sessions", async (req, res) => {
   try {
     const code = Math.random().toString(36).slice(2, 8).toUpperCase();
-    const session = await Session.create({ code, title: req.body.title });
+    const hostKey = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+    const session = await Session.create({ code, title: req.body.title, hostKey });
     res.json(session);
   } catch (err) {
     res.status(500).json({ error: "Could not create session" });
   }
 });
 
+// get a session and its questions (never send the host key)
 app.get("/api/sessions/:code", async (req, res) => {
   try {
-    const session = await Session.findOne({ code: req.params.code });
+    const session = await Session.findOne({ code: req.params.code }).select("-hostKey");
     if (!session) return res.status(404).json({ error: "Session not found" });
     const questions = await Question.find({ sessionCode: req.params.code }).sort({ votes: -1 });
     res.json({ session, questions });
@@ -54,6 +43,7 @@ app.get("/api/sessions/:code", async (req, res) => {
     res.status(500).json({ error: "Could not load session" });
   }
 });
+
 // live events
 io.on("connection", (socket) => {
   socket.on("join-session", (code) => socket.join(code));
@@ -81,10 +71,17 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("question:status", async ({ code, id, status }) => {
+  socket.on("question:status", async ({ code, id, status, hostKey }) => {
     try {
+      if (!hostKey) return;
       if (!["visible", "answered", "hidden"].includes(status)) return;
-      const q = await Question.findByIdAndUpdate(id, { status }, { returnDocument: "after" });
+      const isHost = await Session.exists({ code, hostKey });
+      if (!isHost) return;
+      const q = await Question.findOneAndUpdate(
+        { _id: id, sessionCode: code },
+        { status },
+        { returnDocument: "after" }
+      );
       if (q) io.to(code).emit("question:updated", q);
     } catch (err) {
       console.log("question:status error:", err.message);
