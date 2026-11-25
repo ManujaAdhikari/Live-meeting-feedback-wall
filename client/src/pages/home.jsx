@@ -24,26 +24,23 @@ export default function Home() {
     if (!code.trim()) return;
     navigate(`/join/${code.trim().toUpperCase()}`);
   }
-
   return (
     <div>
       <h1>Live Meeting Feedback Wall</h1>
+      <p className="muted">Collect and rank questions from your audience, live.</p>
 
-      <h2>Host a meeting</h2>
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Meeting title"
-      />
-      <button onClick={createSession}>Create session</button>
+      <div className="card">
+        <h2>Host a meeting</h2>
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Meeting title" />
+        <button onClick={createSession}>Create session</button>
+      </div>
 
-      <h2>Join a meeting</h2>
-      <input
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        placeholder="Session code"
-      />
-      <button onClick={joinSession}>Join</button>
+      <div className="card">
+        <h2>Join a meeting</h2>
+        <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Session code" />
+        <button onClick={joinSession}>Join</button>
+      </div>
     </div>
   );
+ 
 }

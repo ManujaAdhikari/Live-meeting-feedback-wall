@@ -45,31 +45,36 @@ export default function Host() {
   const sorted = [...questions].sort(
     (a, b) => (a.status === "answered") - (b.status === "answered") || b.votes - a.votes
   );
-
   return (
     <div>
       <h1>{title}</h1>
-      {!hostKey && <p>View only. Open this page in the browser that created the session to manage questions.</p>}
-      <p>Session code: <b>{code}</b></p>
-      <p>Share this link: {joinLink}</p>
-      <QRCodeSVG value={joinLink} size={160} />
+      {!hostKey && <p className="muted">View only. Open this page in the browser that created the session to manage questions.</p>}
+
+      <div className="card">
+        <p>Session code: <b>{code}</b></p>
+        <p className="muted">{joinLink}</p>
+        <QRCodeSVG value={joinLink} size={160} />
+      </div>
 
       <h2>Questions ({questions.length})</h2>
-      {sorted.length === 0 && <p>No questions yet.</p>}
+      {sorted.length === 0 && <p className="muted">No questions yet.</p>}
       <ol>
         {sorted.map((q) => (
           <li key={q._id} style={{ opacity: q.status === "hidden" ? 0.4 : 1 }}>
-            {q.status === "answered" && "[Answered] "}
-            {q.text} ({q.votes} votes){" "}
+            <div>
+              {q.status === "answered" && "[Answered] "}
+              {q.text}
+              <div className="votes">{q.votes} votes</div>
+            </div>
             {hostKey && (
-              <>
-                <button onClick={() => setStatus(q._id, q.status === "answered" ? "visible" : "answered")}>
-                  {q.status === "answered" ? "Unmark" : "Mark answered"}
+              <div className="actions">
+                <button className="secondary" onClick={() => setStatus(q._id, q.status === "answered" ? "visible" : "answered")}>
+                  {q.status === "answered" ? "Unmark" : "Answered"}
                 </button>
-                <button onClick={() => setStatus(q._id, q.status === "hidden" ? "visible" : "hidden")}>
+                <button className="secondary" onClick={() => setStatus(q._id, q.status === "hidden" ? "visible" : "hidden")}>
                   {q.status === "hidden" ? "Show" : "Hide"}
                 </button>
-              </>
+              </div>
             )}
           </li>
         ))}
@@ -77,3 +82,4 @@ export default function Host() {
     </div>
   );
 }
+ 

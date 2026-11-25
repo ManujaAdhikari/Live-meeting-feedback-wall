@@ -56,27 +56,32 @@ export default function Join() {
   return (
     <div>
       <h1>{title}</h1>
-      <p>Session code: {code}</p>
+      <p className="muted">Session code: {code}</p>
 
-      <input
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Type your question"
-        maxlength={200}
-      />
-      <button onClick={sendQuestion}>Send</button>
+      <div className="card">
+        <input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Type your question"
+          maxLength={200}
+        />
+        <button onClick={sendQuestion}>Send question</button>
+      </div>
 
       <ul>
         {sorted.map((q) => (
-          <li key={q._id}>
-           {q.status === "answered" && "[Answered] "} 
-            {q.text} ({q.votes} votes){" "}
-            <button onClick={() => upvote(q._id)}disabled={q.voters?.includes(clientId)}>
+          <li key={q._id} className={q.status === "answered" ? "answered" : ""}>
+            <div>
+              {q.status === "answered" && "[Answered] "}
+              {q.text}
+              <div className="votes">{q.votes} votes</div>
+            </div>
+            <button onClick={() => upvote(q._id)} disabled={q.voters?.includes(clientId)}>
               {q.voters?.includes(clientId) ? "Voted" : "Upvote"}
             </button>
           </li>
         ))}
       </ul>
     </div>
-  );
+  );  
 }
