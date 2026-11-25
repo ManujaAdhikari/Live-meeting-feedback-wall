@@ -18,7 +18,7 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch((err) => console.log("DB error:", err.message));
 
-app.get("/", (req, res) => res.send("Server running v2"));
+app.get("/", (req, res) => res.send("Server running "));
 
 // create a session (makes a secret host key)
 app.post("/api/sessions", async (req, res) => {
