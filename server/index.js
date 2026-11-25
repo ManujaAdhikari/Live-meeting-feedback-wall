@@ -46,9 +46,11 @@ app.get("/api/sessions/:code", async (req, res) => {
 
 // live events
 io.on("connection", (socket) => {
+  console.log("client connected");
   socket.on("join-session", (code) => socket.join(code));
 
   socket.on("question:new", async ({ code, text }) => {
+   console.log("question:new", code, text); 
     try {
       if (!text || !text.trim()) return;
       const q = await Question.create({ sessionCode: code, text: text.trim().slice(0, 200) });
