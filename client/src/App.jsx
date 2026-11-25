@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/home";
-import Host from "./pages/host";
-import Join from "./pages/join";
+import Home from "./pages/Home";
+import Host from "./pages/Host";
+import Join from "./pages/Join";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/host/:code" element={<Host />} />
-        <Route path="/join/:code" element={<Join />} />
+        <Route path="/Host/:code" element={<Host />} />
+        <Route path="/Join/:code" element={<Join />} />
       </Routes>
     </BrowserRouter>
   );
