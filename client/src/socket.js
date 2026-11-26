@@ -1,8 +1,7 @@
 import { io } from "socket.io-client";
 import { API } from "./config";
+
 export const socket = io(API);
-socket.on("connect", () => console.log("socket connected"));
-socket.on("connect_error", (e) => console.log("socket error:", e.message));
 export const clientId =
   localStorage.getItem("clientId") ||
   (() => {
