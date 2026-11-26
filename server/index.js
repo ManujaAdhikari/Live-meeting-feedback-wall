@@ -8,9 +8,10 @@ const { Session, Question } = require("./models");
 
 const app = express();
 const server = http.createServer(app);
+const FRONTEND = process.env.FRONTEND_URL || "*";
 const io = new Server(server, { cors: { origin: "*" } });
 
-app.use(cors());
+app.use(cors({origin:FRONTEND}));
 app.use(express.json());
 
 mongoose
