@@ -2,7 +2,9 @@
 
 A website where people in a meeting or seminar send questions from their phones and upvote the ones they care about. The host sees the ranked list update live and can mark questions as answered or hide them.
 
-<!-- Live demo: _add your link here after deploying_ -->
+Live demo: https://live-meeting-feedback-wall.vercel.app
+
+The backend runs on a free plan, so the first load after a quiet period can take up to a minute.
 
 ## Why I built this
 
@@ -81,7 +83,8 @@ Open the address Vite prints (usually http://localhost:5173).
 - Vote limiting is per browser. Someone who clears their browser data or uses a private window can vote again. Stopping that would need accounts, which I left out on purpose to keep joining instant.
 - The host key lives in one browser. If the host clears their data or switches device, they lose moderation access for that session.
 - There is no automated test suite yet.
-- CORS is open while developing and should be restricted to the frontend address in production.
+- CORS is restricted to the deployed frontend.
+- Free hosting can put the backend to sleep and breifly drop live connections.
 
 ## Ideas for later
 
